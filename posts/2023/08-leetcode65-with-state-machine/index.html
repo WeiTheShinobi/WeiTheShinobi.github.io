@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-tw" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/png" href="http://localhost:1313/favicon.ico" />
+<meta property="og:title" content="手把手帶你使用狀態機！以 LeetCode 65. Valid Number 示範" />
+<meta property="og:description" content="手把手帶你使用狀態機！以 LeetCode 65. Valid Number 示範" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/2023/08-leetcode65-with-state-machine/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-09-28T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-09-28T00:00:00+00:00" />
+
+
+<title>WeiTheShinobi | 手把手帶你使用狀態機！以 LeetCode 65. Valid Number 示範</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+  
+      <link rel="stylesheet" href="/css/palette/catpuccin.css">
+
+      <script src="/js/main.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
+
+  
+<body
+    class="dark text-light"
+>
+  
+  <main>
+    
+  <div class="container pt-5">
+    <div class="row mt-5 pt-5">
+      
+  <nav aria-label="breadcrumb" class="small">
+    <ol class="breadcrumb fw-bold">
+    <li class="breadcrumb-item">
+      <a href="/"
+        
+      >home</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/about"
+        
+      >about</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/posts"
+        class="text-decoration-underline link-offset-3"
+        
+      >posts</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="https://github.com/imgios/not-much"
+        
+          target="_blank" rel="noopener noreferrer"
+        
+      >github</a>
+      
+    </li>
+    </ol>
+  </nav>
+
+    </div>
+    <div class="post">
+      <header class="mb-5">
+        <h1 class="text-uppercase">手把手帶你使用狀態機！以 LeetCode 65. Valid Number 示範</h1>
+        
+        
+        <div aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item small">
+              <time datetime="2023-09-28T00:00:00&#43;00:00">September 28, 2023</time>
+            </li>
+            <li class="breadcrumb-item small">
+              3 minutes
+            </li>
+          </ol>
+        </div>
+      </header>
+      <article>
+        <h1 id="手把手帶你使用狀態機以-leetcode-65-valid-number-示範">手把手帶你使用狀態機！以 LeetCode 65. Valid Number 示範</h1>
+<img src="01.png">
+<p>狀態機！啟動！LeetCode 第 65 題，合法的數字：今天選的這個題目還蠻有趣的，可以用一堆 <code>if else</code> 來判斷得到答案，但這個作法會有一堆 edge case 難以處理，而且也很醜、寫起來更是難受，但也可以使用<strong>狀態機</strong>：就是這次的主題，也許你會在<strong>編譯器</strong>或 <strong>AWS step function</strong> 中聽過。我希望帶大家用簡單的方式和類比，來了解這些有趣的事物，只需要懂一點程式就能看懂。探索未知總是令人興奮！</p>
+<h2 id="簡單講解題目">簡單講解題目</h2>
+<p><a href="https://leetcode.com/problems/valid-number/">Valid Number - LeetCode</a></p>
+<p>輸入一個字串，判斷是否是一個 number，輸出布林值。</p>
+<p>number 可以是一個 decimal 或一個 integer，後面可以選擇要不要加 <code>e</code>。</p>
+<p>decimal 可以是選擇加上 <code>+/-</code>，且會是以下三擇一：</p>
+<ul>
+<li>一個或以上的 digits + <code>.</code></li>
+<li>一個或以上的 digits + <code>.</code> + 一個以上的 digits</li>
+<li><code>.</code> + 一個或以上的 digits</li>
+</ul>
+<p>integer 可以選擇加上 <code>+/-</code>：</p>
+<ul>
+<li>一個或以上的 digits</li>
+</ul>
+<h2 id="正規表示式">正規表示式</h2>
+<p>如果英文字母 A 到 Z 是一個英文字母的集合，那單字就是英文字母的排列組合，像是 apple 是英文字母組合成的，接續著說，一個句子就是單字集合照著某些規則組合而成的排列組合，可以想像我們從一本字典中選出一些單字，然後組合起來，像是<code>I like duck</code>，可能有一些主詞、受詞、動詞啊這些從小學到大的觀念，如果能夠照著規則，我們就能很輕鬆的表達出這題，<strong>我們只要照著規則把程式碼寫下來就好了</strong>。先用簡單的方式，試著用符號來表達題目的意思，這裡使用正規表達式。</p>
+<blockquote>
+<p>可以把正規表示式當成一個方便又實用的工具，用來判斷輸入的字串是否有按照規則，所以我們可以用正規表示式來判斷輸入的字串是不是一個 number。</p>
+</blockquote>
+<p>在方便的今天，如果想知道某些規則的正規表示式怎麼寫（像是合法的 email），只要問 LLM 就能輕鬆得到想要的答案。以下節錄至 ChatGPT 的回答：</p>
+<blockquote>
+<p>你可以使用正则表达式来验证给定的字符串是否是有效的数字。根据你的条件，以下是一个可能的正则表达式：</p>
+<pre tabindex="0"><code>^[+-]?(\d+\.\d*|\.\d+|\d+)([eE][+-]?\d+)?$
+</code></pre><p>这个正则表达式的含义如下：</p>
+<ul>
+<li>
+<p><code>^</code> 和 <code>$</code>：表示字符串的开始和结束。</p>
+</li>
+<li>
+<p><code>[+-]?</code>：表示可选的正负号。</p>
+</li>
+<li>
+<pre tabindex="0"><code>(\d+\.\d*|\.\d+|\d+)
+</code></pre><p>：表示数字的整数部分和小数部分，它可以有以下三种形式之一：</p>
+<ul>
+<li><code>\d+\.\d*</code>：至少一个数字，一个小数点，然后零个或多个数字。</li>
+<li><code>.\d+</code>：一个小数点，然后至少一个数字。</li>
+<li><code>\d+</code>：至少一个数字。</li>
+</ul>
+</li>
+<li>
+<p><code>([eE][+-]?\d+)?</code>：表示指数部分，它是一个大写或小写字母 &ldquo;e&rdquo;，后面跟着可选的正负号和至少一个数字。</p>
+</li>
+</ul>
+<p>略 &hellip;</p>
+</blockquote>
+<p>感謝 2023！噢耶！</p>
+<blockquote>
+<p>了解形式語言，非常的有趣！</p>
+<p>推薦閱讀：<a href="https://kopu.chat/%E5%BD%A2%E5%BC%8F%E8%AA%9E%E8%A8%80%EF%BC%9A%E7%8F%BE%E4%BB%A3%E5%B7%A5%E7%A8%8B%E5%B8%AB%E5%8F%AF%E4%BB%A5%E7%94%A8%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80%E9%83%BD%E5%BE%97%E6%84%9F%E8%AC%9D%E5%AE%83/">形式語言：現代工程師可以用程式語言、不需要用紙帶打洞來寫程式都要感謝它 - 寫點科普 Kopuchat</a></p>
+</blockquote>
+<p>所以我們的第一個作法，正規表示式如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#6272a4">// LeetCode 65. Valid Number
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>
+</span></span><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">isNumber</span>(s <span style="color:#8be9fd">string</span>) <span style="color:#8be9fd">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> regexp.<span style="color:#50fa7b">MustCompile</span>(<span style="color:#f1fa8c">&#34;^[+-]?(\\d+\\.\\d*|\\.\\d+|\\d+)([eE][+-]?\\d+)?$&#34;</span>).<span style="color:#50fa7b">MatchString</span>(s)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="有限狀態機">有限狀態機</h2>
+<p>狀態機是一種數學模型，用來描述物件在不同狀態之間轉換的行為，幫助我們簡化複雜與管理的問題：</p>
+<p>可以看到狀態、事件、轉換、結束狀態（雙重圈圈的狀態），剛開始只要瞭解基本規則即可。</p>
+<blockquote>
+<p>有興趣可以搜尋關鍵字：<strong>DFA</strong>, <strong>NFA</strong>。</p>
+</blockquote>
+<img src="09.png">
+<p>換個角度想想，在不同的狀態下得到同樣的東西也許會有不同的結果，餓了拿到錢可以買食物，吃了食物會轉移你的狀態，從餓到飽，<strong>不同的時空背景下會做不同的事情</strong>，刀可以是兇器，也可以保護人，<del>當我拿著刀就無法擁抱你</del>，就看當下的情況，接下來我們會看到何謂狀態機、視覺化的流程。</p>
+<h2 id="畫圖">畫圖</h2>
+<p>只要按照題目的意思做即可，首先 number 可以是 decimal 或 integer，所以我們可以看看 decimal 和 integer 的開頭：</p>
+<img src="02.png">
+<ul>
+<li>number 是 decimal 或 integer，可以選擇再加上 e + integer</li>
+<li>decimal 可以選擇 sign，接下來是 digit 或 dot</li>
+<li>integer 可以選擇 sign，接下來只能是 digit</li>
+</ul>
+<p>開始拆解，照著這三點把結果畫出來，decimal 稍微複雜一點，他有三條路和選配一個正負號，integer 比較簡單，至於要怎麼畫圖呢？現在我們拿 integer 示範：</p>
+<blockquote>
+<p>integer 可以選擇加上 <code>+/-</code>：</p>
+<ul>
+<li>一個或以上的 digits</li>
+</ul>
+</blockquote>
+<p>integer 一開始選擇可以接受 <code>+/-</code>，那如果不選<code>+/-</code>的話也可以接受<code>0-9</code>，所以可以畫出兩條路：</p>
+<ul>
+<li>初始狀態接受<code>+/-</code>的路</li>
+<li>初始狀態接受<code>0-9</code>的路</li>
+</ul>
+<p>接下來因為<code>+/-</code>後可以接受<code>0-9</code>，所以替他加上一條路。而 digit 可以是一個或多個以上，所以這個狀態可以再畫出路，那會有多少個 digit 呢？難道有多少 digit 就要畫出多少的狀態嗎？不用，可以把這些狀態合併成指向他自己。</p>
+<p>而 decimal 同理，把初始狀態可以接受的 token 列出來：</p>
+<blockquote>
+<p>decimal 可以是選擇加上 <code>+/-</code>，且會是以下三擇一：</p>
+<ol>
+<li>一個或以上的 digits + <code>.</code></li>
+<li>一個或以上的 digits + <code>.</code> + 一個以上的 digits</li>
+<li><code>.</code> + 一個或以上的 digits</li>
+</ol>
+</blockquote>
+<p>可以知道初始狀態可以接受<code>+/-</code>，第 1, 2 點可以接受 digits，第 3 點可以接受 <code>.</code>，這代表初始狀態可以有三條路走，然後我們再按照這個規則延伸，<strong>如果可以接受 token，就有路</strong>。<del>路是人走出來的</del></p>
+<p>下圖中：integer 是左半邊， decimal 是右半邊。</p>
+<img src="03.png">
+<p>終於弄好了，看起來超複雜的，左邊是 integer 的路線，右邊則是 decimal，照著題目規則畫上去，每個圈圈代表一個狀態，不同狀態中間有許多路來轉換。</p>
+<p>選到什麼字符就往哪走，一直走到沒有字符為止。<strong>雙重圈圈代表這個狀態可以是結束的狀態</strong>，如果走到這個狀態時剛好字串也結束了的話，那代表機器接受了這個字串；反之走到單獨一個圈的狀態剛好結束，代表拒絕，<strong>還沒結束便無路可走也是拒絕的</strong>。</p>
+<p>舉例來說：我們從 number 開始，當你遇到什麼符號，就選擇往哪邊走，如果字串是<code>+5</code>，一開始就可以往左或右邊走，因為第一個字符是<code>+</code>，下一個符號是<code>5</code>，如果當下的狀態可以接受（像是<code>0-9</code>），那我們就有路可走，選擇超多的。</p>
+<p>這裡附上一個視覺化的範例，示範一個狀態機能否接受字串<code>abc</code>：</p>
+<img src="10.png">
+<p>因為最後的狀態可以是終態，所以機器接受。</p>
+<p>但現在有個問題，我們很難預測到底要選擇哪條路走，像是剛剛說的例子，假如一開始拿到<code>+</code>，到底要往左還是往右呢？當然也可以把每條都走過一次看看有沒有成功的案例，這也是一種做法，但是會走得很累、腿很酸。又或者我們也可以簡化一下這張圖呢？行吧，不如就把狀態合併吧，這樣就不用走這麼多路了嘿嘿！</p>
+<img src="04.png">
+<p>先處理左半邊那塊，在初始狀態中有兩條是<code>0-9</code>，也有兩條是<code>+/-</code>，我們可以把他們合併，因為他們都接受同樣的 token。藍色的線是合併的樣子。與其說是合併，不如想像一下，我們把不同的狀態放到同一個集合中。</p>
+<img src="05.png">
+<p>這條路上有兩個<code>.</code>，合併！</p>
+<img src="06.png">
+<p>這兩個狀態可以視為等價。</p>
+<img src="07.png">
+<p>最後把底下那個 integer 攤開來，這樣每個狀態的每條路都是<strong>確定的</strong>、沒有岔路，我們不用把每條岔路都走過一次來猜測，太好了！我們可以開始寫程式囉！</p>
+<h2 id="按圖施工馬到成功">按圖施工，馬到成功</h2>
+<p>最後的做法就稍微簡單一點了，現在按照這個圖把程式碼寫出來即可，把每個狀態寫出來，把每個狀態的路徑寫出來，標記一下哪些狀態可以是結束，最後寫下演算法。</p>
+<img src="08.png">
+<p>首先把每個狀態定義好，我已經用藍色把每個狀態標記起來：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">const</span> (
+</span></span><span style="display:flex;"><span>		a = <span style="color:#ff79c6">iota</span>
+</span></span><span style="display:flex;"><span>		b
+</span></span><span style="display:flex;"><span>		c
+</span></span><span style="display:flex;"><span>		d
+</span></span><span style="display:flex;"><span>		e
+</span></span><span style="display:flex;"><span>		f
+</span></span><span style="display:flex;"><span>		g
+</span></span><span style="display:flex;"><span>		h
+</span></span><span style="display:flex;"><span>		i
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		digit = <span style="color:#f1fa8c">&#34;0123456789&#34;</span>
+</span></span><span style="display:flex;"><span>		sign  = <span style="color:#f1fa8c">&#34;+-&#34;</span>
+</span></span><span style="display:flex;"><span>		eE    = <span style="color:#f1fa8c">&#34;eE&#34;</span>
+</span></span><span style="display:flex;"><span>		dot   = <span style="color:#f1fa8c">&#34;.&#34;</span>
+</span></span><span style="display:flex;"><span>	)
+</span></span></code></pre></div><p>寫下所有的狀態，還有 token set。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">type</span> Path <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>		tokenSet  <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>		nextState <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	nextPath <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">map</span>[<span style="color:#8be9fd">int</span>][]Path{
+</span></span><span style="display:flex;"><span>		a: {{sign, b}, {digit, c}, {dot, d}},
+</span></span><span style="display:flex;"><span>		b: {{digit, c}, {dot, d}},
+</span></span><span style="display:flex;"><span>		c: {{digit, c}, {dot, f}, {eE, g}},
+</span></span><span style="display:flex;"><span>		d: {{digit, e}},
+</span></span><span style="display:flex;"><span>		e: {{digit, e}, {eE, g}},
+</span></span><span style="display:flex;"><span>		f: {{digit, f}, {eE, g}},
+</span></span><span style="display:flex;"><span>		g: {{digit, i}, {sign, h}},
+</span></span><span style="display:flex;"><span>		h: {{digit, i}},
+</span></span><span style="display:flex;"><span>		i: {{digit, i}},
+</span></span><span style="display:flex;"><span>	}
+</span></span></code></pre></div><p>接下來把路徑寫下來，在這裡定義每個狀態的路接受哪些 token set，接受了會到哪條路上。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	isFinalState <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">map</span>[<span style="color:#8be9fd">int</span>]<span style="color:#8be9fd">bool</span>{
+</span></span><span style="display:flex;"><span>		c: <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>		e: <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>		f: <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>		i: <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span></code></pre></div><p>我們把圖中的雙重圈圈記錄下來，這表示此狀態可以是結束狀態，如果在雙重圈圈結束代表是正確的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span>	<span style="color:#6272a4">// 初始狀態
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	currState <span style="color:#ff79c6">:=</span> a
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> _, token <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> s {
+</span></span><span style="display:flex;"><span>		paths <span style="color:#ff79c6">:=</span> nextPath[currState]
+</span></span><span style="display:flex;"><span>		hasPathToGo <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> _, path <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> paths {
+</span></span><span style="display:flex;"><span>      <span style="color:#6272a4">// 檢查當下的 token 可不可以走這條路，如果有，進入那個狀態
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>			<span style="color:#ff79c6">if</span> strings.<span style="color:#50fa7b">ContainsRune</span>(path.tokenSet, token) {
+</span></span><span style="display:flex;"><span>				currState = path.nextState
+</span></span><span style="display:flex;"><span>				hasPathToGo = <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>    <span style="color:#6272a4">// 發現當下狀態無路可走，拒絕
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>		<span style="color:#ff79c6">if</span> !hasPathToGo {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#6272a4">// 結束 檢查有沒有停在雙重圈圈中
+</span></span></span><span style="display:flex;"><span><span style="color:#6272a4"></span>	<span style="color:#ff79c6">if</span> !isFinalState[currState] {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">true</span>
+</span></span></code></pre></div><p>最後是狀態機的演算法，走訪字串的每個符號，檢查當前狀態能否接受此符號，如果能接受就到下一個狀態，反之則拒絕，最終結束時，如果狀態可以是結束狀態，則表示這個字串被接受，反之。</p>
+<p>最後附上完整的程式碼，希望大家都能自己從零到 accept，慢慢思索，成就感滿滿！</p>
+<p>WeiTheShinobi</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#8be9fd;font-style:italic">func</span> <span style="color:#50fa7b">isNumber</span>(s <span style="color:#8be9fd">string</span>) <span style="color:#8be9fd">bool</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">const</span> (
+</span></span><span style="display:flex;"><span>		a = <span style="color:#ff79c6">iota</span>
+</span></span><span style="display:flex;"><span>		b
+</span></span><span style="display:flex;"><span>		c
+</span></span><span style="display:flex;"><span>		d
+</span></span><span style="display:flex;"><span>		e
+</span></span><span style="display:flex;"><span>		f
+</span></span><span style="display:flex;"><span>		g
+</span></span><span style="display:flex;"><span>		h
+</span></span><span style="display:flex;"><span>		i
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		digit = <span style="color:#f1fa8c">&#34;0123456789&#34;</span>
+</span></span><span style="display:flex;"><span>		sign  = <span style="color:#f1fa8c">&#34;+-&#34;</span>
+</span></span><span style="display:flex;"><span>		eE    = <span style="color:#f1fa8c">&#34;eE&#34;</span>
+</span></span><span style="display:flex;"><span>		dot   = <span style="color:#f1fa8c">&#34;.&#34;</span>
+</span></span><span style="display:flex;"><span>	)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#8be9fd;font-style:italic">type</span> Path <span style="color:#8be9fd;font-style:italic">struct</span> {
+</span></span><span style="display:flex;"><span>		tokenSet  <span style="color:#8be9fd">string</span>
+</span></span><span style="display:flex;"><span>		nextState <span style="color:#8be9fd">int</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	nextPath <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">map</span>[<span style="color:#8be9fd">int</span>][]Path{
+</span></span><span style="display:flex;"><span>		a: {{sign, b}, {digit, c}, {dot, d}},
+</span></span><span style="display:flex;"><span>		b: {{digit, c}, {dot, d}},
+</span></span><span style="display:flex;"><span>		c: {{digit, c}, {dot, f}, {eE, g}},
+</span></span><span style="display:flex;"><span>		d: {{digit, e}},
+</span></span><span style="display:flex;"><span>		e: {{digit, e}, {eE, g}},
+</span></span><span style="display:flex;"><span>		f: {{digit, f}, {eE, g}},
+</span></span><span style="display:flex;"><span>		g: {{digit, i}, {sign, h}},
+</span></span><span style="display:flex;"><span>		h: {{digit, i}},
+</span></span><span style="display:flex;"><span>		i: {{digit, i}},
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	isFinalState <span style="color:#ff79c6">:=</span> <span style="color:#8be9fd;font-style:italic">map</span>[<span style="color:#8be9fd">int</span>]<span style="color:#8be9fd">bool</span>{
+</span></span><span style="display:flex;"><span>		c: <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>		e: <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>		f: <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>		i: <span style="color:#ff79c6">true</span>,
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	currState <span style="color:#ff79c6">:=</span> a
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">for</span> _, token <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> s {
+</span></span><span style="display:flex;"><span>		paths <span style="color:#ff79c6">:=</span> nextPath[currState]
+</span></span><span style="display:flex;"><span>		hasPathToGo <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">for</span> _, path <span style="color:#ff79c6">:=</span> <span style="color:#ff79c6">range</span> paths {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">if</span> strings.<span style="color:#50fa7b">ContainsRune</span>(path.tokenSet, token) {
+</span></span><span style="display:flex;"><span>				currState = path.nextState
+</span></span><span style="display:flex;"><span>				hasPathToGo = <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#ff79c6">break</span>
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">if</span> !hasPathToGo {
+</span></span><span style="display:flex;"><span>			<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">if</span> !isFinalState[currState] {
+</span></span><span style="display:flex;"><span>		<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">false</span>
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#ff79c6">return</span> <span style="color:#ff79c6">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
+      </article>
+      
+
+      <div class="row">
+    <div class="col-md">
+        
+        <a href="http://localhost:1313/posts/2023/turing-complete/">
+            <span>previous: </span>
+            <span>讓這個 Steam 上的遊戲教你做出 CPU：《Turing Complete》</span>
+        </a>
+        
+    </div>
+    <div class="col-md text-md-end">
+        
+    </div>
+</div>
+    </div>
+  </div>
+  <footer>
+    <div class="container mt-4 pb-1">
+    <p class="small">
+        
+        
+        // powered by <a href="https://gohugo.io/">hugo</a> and <a href="https://github.com/imgios/not-much">imgios/not-much</a>
+        
+    </p>
+</div>
+  </footer>
+
+  </main>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

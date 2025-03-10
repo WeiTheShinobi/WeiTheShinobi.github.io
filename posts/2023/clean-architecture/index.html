@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-tw" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/png" href="http://localhost:1313/favicon.ico" />
+<meta property="og:title" content="Clean Architecture 替我解決的痛點" />
+<meta property="og:description" content="Clean Architecture 替我解決的痛點" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/2023/clean-architecture/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-01-07T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-01-07T00:00:00+00:00" />
+
+
+<title>WeiTheShinobi | Clean Architecture 替我解決的痛點</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+  
+      <link rel="stylesheet" href="/css/palette/catpuccin.css">
+
+      <script src="/js/main.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
+
+  
+<body
+    class="dark text-light"
+>
+  
+  <main>
+    
+  <div class="container pt-5">
+    <div class="row mt-5 pt-5">
+      
+  <nav aria-label="breadcrumb" class="small">
+    <ol class="breadcrumb fw-bold">
+    <li class="breadcrumb-item">
+      <a href="/"
+        
+      >home</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/about"
+        
+      >about</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/posts"
+        class="text-decoration-underline link-offset-3"
+        
+      >posts</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="https://github.com/imgios/not-much"
+        
+          target="_blank" rel="noopener noreferrer"
+        
+      >github</a>
+      
+    </li>
+    </ol>
+  </nav>
+
+    </div>
+    <div class="post">
+      <header class="mb-5">
+        <h1 class="text-uppercase">Clean Architecture 替我解決的痛點</h1>
+        
+        
+        <div aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item small">
+              <time datetime="2023-01-07T00:00:00&#43;00:00">January 7, 2023</time>
+            </li>
+            <li class="breadcrumb-item small">
+              1 minutes
+            </li>
+          </ol>
+        </div>
+      </header>
+      <article>
+        <h1 id="clean-architecture-替我解決的痛點">Clean Architecture 替我解決的痛點</h1>
+<p>WeiTheShinobi</p>
+<p>Clean Architecture 是我讀的一本書，這本書講了架構、SOLID、作者的自傳等等，我來分享一些我得到的新東西，也許這比較像是讀書心得或是我對自己的碎碎念。</p>
+<img src="03.png">
+<h2 id="被資料庫綁架">被資料庫綁架</h2>
+<p>我想這是出發點問題，很多人應該看過以下這種依賴關係：</p>
+ <img src="02.png">
+<p>這是你常常會看到的做法，甚至是網路上很多的範例也是這樣，程式可以跑、可以正確執行，我不知道你有沒有這樣想過，但我總是覺得這種做法卡卡的，不管是開發中或是日後維護，總是有種說不出的怪，為什麼改起來怪怪的？接手起來好痛苦啊！需求改動總是像大地震一樣，最終變成一團義大利麵。商業邏輯依賴於資料庫表、直接使用資料庫表的 model 輸出，語意不明確又容易出錯。</p>
+<h2 id="以領域為主">以領域為主</h2>
+<p>以主要的商業邏輯做出發點，寫出邏輯與資料結構，你不需要知道你的資料是從 MySQL 還是 Redis 來的，你只需要知道有個東西會給你資料。你也不需要知道你的資料會送到瀏覽器、桌面應用還是 RPC，你只知道把資料交出去就對了。把主要的邏輯與 IO 的部分解耦，讓外部依賴領域邏輯，也不要讓外部插手領域邏輯，這樣你才能在日後改變的更少，為何？這與依賴關係有關。</p>
+<h2 id="所謂依賴">所謂依賴</h2>
+<img src="01.png">
+<p>並不是把程式分開來寫就真的解耦了，重點在於依賴關係，這與你用微服務或是單體無關，上游改動下游就會受到影響，所以管理依賴很重要，如果把常常變動的元件當作核心會很痛苦的，在 Go 語言中你的迴圈依賴是過不了編譯器的。</p>
+<h2 id="簡單點">簡單點</h2>
+<p>我覺得寫 code 還是要取捨，功能就只是簡單的讀取資料就簡單寫，不要過度設計，在動態中逐步成長，一開始就弄一堆有的沒的也許之後也用不到了，還讓接手的人覺得困擾，一堆不必要的 interface 在 trace 的時候是挺困擾的，記得那句話：「你現在不需要」，我覺得其實寫程式還是很自由的，但不代表做什麼都可以，遵守基礎的原則然後發揮創意，就像畫畫一樣。</p>
+<h2 id="測試程式碼">測試程式碼</h2>
+<p>我基本上是那種會「一邊寫測試一邊開發」的人，所以測試的痛我有感觸，我常常覺得測試寫起來難以維護，測試依賴於產品程式碼，所以測試維護寫得不好維護成本超高，維護超累就懶得弄，懶得弄測試就沒意義了，寫測試也是需要思考與練習的。別讓測試特定化，這也是我常犯的錯，太過訂製的測試會一改就廢，測試需要 mock 、輸入輸出都需要想想，我現在寫測試都會思考如何讓測試更好維護。</p>
+<h2 id="聊聊框架">聊聊框架</h2>
+<p>以前用 Java Spring Boot 框架，那時就覺得這根本是魔法，怎麼可以這麼方便啊！加上一個註解就幫我做好多事，依賴注入還有開箱即用真的很舒服，後來我開始寫 Go，我動手實作以前那些所謂的「魔法」，注入物件、初始化，不知道為什麼心裡反而有種踏實的感覺哈哈哈哈，畢竟以前都是讓框架來替我管理，大概是因為自己從頭寫到尾真的理解了吧，回到正題，我想說少即是多，也許是時候開始思考你到底需要什麼，就像家裡面有一堆放很久沒用到的東西，之後大概也用不到，可以丟掉了。</p>
+<img src="04.png">
+<p>推薦大家都可以看看這本書</p>
+<p>參考資料：《Clean Architecture》</p>
+
+      </article>
+      
+
+      <div class="row">
+    <div class="col-md">
+        
+    </div>
+    <div class="col-md text-md-end">
+        
+        <a href="http://localhost:1313/posts/2023/why-mod-3/">
+            <span>next: </span>
+            <span>你有想過為什麼一個數能被3整除嗎</span>
+        </a>
+        
+    </div>
+</div>
+    </div>
+  </div>
+  <footer>
+    <div class="container mt-4 pb-1">
+    <p class="small">
+        
+        
+        // powered by <a href="https://gohugo.io/">hugo</a> and <a href="https://github.com/imgios/not-much">imgios/not-much</a>
+        
+    </p>
+</div>
+  </footer>
+
+  </main>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-tw" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/png" href="http://localhost:1313/favicon.ico" />
+<meta property="og:title" content="一起學習編譯器吧_01" />
+<meta property="og:description" content="一起學習編譯器吧_01" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/2023/compilers01/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-02-28T00:00:00+00:00" />
+<meta property="article:modified_time" content="2023-02-28T00:00:00+00:00" />
+
+
+<title>WeiTheShinobi | 一起學習編譯器吧_01</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+  
+      <link rel="stylesheet" href="/css/palette/catpuccin.css">
+
+      <script src="/js/main.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
+
+  
+<body
+    class="dark text-light"
+>
+  
+  <main>
+    
+  <div class="container pt-5">
+    <div class="row mt-5 pt-5">
+      
+  <nav aria-label="breadcrumb" class="small">
+    <ol class="breadcrumb fw-bold">
+    <li class="breadcrumb-item">
+      <a href="/"
+        
+      >home</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/about"
+        
+      >about</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/posts"
+        class="text-decoration-underline link-offset-3"
+        
+      >posts</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="https://github.com/imgios/not-much"
+        
+          target="_blank" rel="noopener noreferrer"
+        
+      >github</a>
+      
+    </li>
+    </ol>
+  </nav>
+
+    </div>
+    <div class="post">
+      <header class="mb-5">
+        <h1 class="text-uppercase">一起學習編譯器吧_01</h1>
+        
+        
+        <div aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item small">
+              <time datetime="2023-02-28T00:00:00&#43;00:00">February 28, 2023</time>
+            </li>
+            <li class="breadcrumb-item small">
+              1 minutes
+            </li>
+          </ol>
+        </div>
+      </header>
+      <article>
+        <h1 id="一起學習編譯器吧_01">一起學習編譯器吧_01</h1>
+<img src="01.png">
+<p>我記得以前聽大學的教授說過：「如果大學只能選一堂課，選編譯器」。最近在學習編譯器，這是系列文的第一篇，我想用<strong>費曼學習法</strong>來學習，簡單來說，就是要能夠將所學的東西解釋給不懂的人聽，我希望這個系列文能讓一般人也能夠理解，你可以當作有趣的科普，融會貫通後使用到其他地方。如果你對這個主題有興趣，可以看看最下方參考資料的書籍。</p>
+<h2 id="為了知道自己不知道">為了知道自己不知道</h2>
+<p>我們常常覺得自己什麼都會了，其實只是因為<strong>不知道自己不懂</strong>，這樣的無知會讓人充滿自信。其實我是覺得學習編譯器投資報酬率很高，可以有很多應用，舉例來說：整合開發環境（IDE） 在你一邊寫 Code 時就動態地為你檢查語法錯誤、做一些工具、學習計算思維和數學，學編譯器不一定要從事開發編譯器的工作，<strong>反正遲早要學會，不如早點學會。</strong></p>
+<h2 id="編譯器是什麼">編譯器是什麼</h2>
+<p>一開始，人類使用 01 序列來編寫程式，明確命令電腦要怎麼做，但是這樣容易出錯而且難讀，舉例來說：電腦有一套指令集，<code>1001</code> 代表加，<code>1</code>, <code>10</code> 代表地址1, 地址2，一起輸入進去就會計算地址1的值 + 地址2的值。</p>
+<p>後來人們有了組合語言：機器指令的別名，例如把 <code>1001</code>改名叫 <code>ADD</code>，這樣就會好寫好懂好讀，還有 macro（就是 C 語言中那個 <code>#define</code>），macro 簡單說就是把程式碼做替換，舉例：<code>#define a x</code>會把<code>a</code>替換成<code>x</code>，用程式寫出程式，然後不斷發展新特性至今，程式語言有了更多的抽象，這些高階語言翻譯成最底層的機器碼來執行。</p>
+<p>編譯器把一個語言翻譯成另一個語言，這就像一套流水線一樣：</p>
+<ul>
+<li>
+<p>編譯器先把程式碼分解開來，像是變數、程式語言的關鍵字（if, for, int&hellip;）、常數、運算子（sizeof, +, -&hellip;）等等，方便後面更好動作。</p>
+</li>
+<li>
+<p>處理空白和註解，這些是給人看的所以要刪掉；生成抽象語法樹，檢查文法有沒有正確，類型檢查，不同的類型要怎麼辦，像是 1 和 1.0 能夠一起運算嗎？需要轉型成整數嗎？或者不正確的類型就是報錯。</p>
+</li>
+<li>
+<p>生成中間程式碼，最佳化程式碼，最重要的事必須<strong>確保意思是一樣的</strong>，不然毫無意義。</p>
+</li>
+<li>
+<p>最後生成目標程式碼（不一定要是機器碼，像是 Java 虛擬機的字節碼等等，程式語言之間也能互相翻譯，例如 Kotlin 可以編譯成 Javascript）。</p>
+</li>
+</ul>
+<p>我們現在很抽象的說每個環節在做什麼，而每個環節的實作都是可以替換的，或者拆分開來，想要不同功能就替換某個實作即可。<strong>制定好抽象就確保了好的系統</strong>。</p>
+<h2 id="下回預告">下回預告</h2>
+<p>一個簡單的語法制導翻譯器</p>
+<h2 id="參考資料">參考資料</h2>
+<p>《编译原理》（Compilers: Principles, Techniques, and Tools）</p>
+<p>《现代编译原理》（Modern Compiler Implementation in C）</p>
+<p>WeiTheShinobi</p>
+
+      </article>
+      
+
+      <div class="row">
+    <div class="col-md">
+        
+        <a href="http://localhost:1313/posts/2023/quack-tree/">
+            <span>previous: </span>
+            <span>會打字就行！用 Go 語言實作好玩小專案：tree</span>
+        </a>
+        
+    </div>
+    <div class="col-md text-md-end">
+        
+        <a href="http://localhost:1313/posts/2023/turing-complete/">
+            <span>next: </span>
+            <span>讓這個 Steam 上的遊戲教你做出 CPU：《Turing Complete》</span>
+        </a>
+        
+    </div>
+</div>
+    </div>
+  </div>
+  <footer>
+    <div class="container mt-4 pb-1">
+    <p class="small">
+        
+        
+        // powered by <a href="https://gohugo.io/">hugo</a> and <a href="https://github.com/imgios/not-much">imgios/not-much</a>
+        
+    </p>
+</div>
+  </footer>
+
+  </main>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
