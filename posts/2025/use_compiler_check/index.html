@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-tw" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/png" href="http://localhost:1313/favicon.ico" />
+<meta property="og:title" content="善用編譯器的檢查" />
+<meta property="og:description" content="善用編譯器的檢查 如果你的專案中，解構體常常會修改，那請不要用..Default::default()，雖然偷懶少寫了一點，但是修改時編譯器不會提示。
+#[derive(Default)] struct Foo { a: i32, b: i32, c: i32, } fn main() { let f = Foo { a: 10, ..Default::default() }; } 上方範例中，如果在Foo中增加一個欄位d，而Foo使用的地方散落在各地且非常隱密，那麼使用的地方不會被編譯器報出錯誤，就需要多一些時間去尋找，這讓維護起來比較不方便。當然這取決於使用場景，可以取捨究竟要省一點點行數，還是比較需要編譯器的提示。
+希望這個技巧帶給讀者一些維護上的啟發。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/posts/2025/use_compiler_check/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2025-03-13T22:24:18+08:00" />
+<meta property="article:modified_time" content="2025-03-13T22:24:18+08:00" />
+
+
+<title>WeiTheShinobi | 善用編譯器的檢查</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+  
+      <link rel="stylesheet" href="/css/palette/catpuccin.css">
+
+      <script src="/js/main.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+</head>
+
+  
+<body
+    class="dark text-light"
+>
+  
+  <main>
+    
+  <div class="container pt-5">
+    <div class="row mt-5 pt-5">
+      
+  <nav aria-label="breadcrumb" class="small">
+    <ol class="breadcrumb fw-bold">
+    <li class="breadcrumb-item">
+      <a href="/"
+        
+      >home</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/about"
+        
+      >about</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="/posts"
+        class="text-decoration-underline link-offset-3"
+        
+      >posts</a>
+      
+    </li>
+    <li class="breadcrumb-item">
+      <a href="https://github.com/WeiTheShinobi"
+        
+          target="_blank" rel="noopener noreferrer"
+        
+      >github</a>
+      
+    </li>
+    </ol>
+  </nav>
+
+    </div>
+    <div class="post">
+      <header class="mb-5">
+        <h1 class="text-uppercase">善用編譯器的檢查</h1>
+        
+        
+        <div aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item small">
+              <time datetime="2025-03-13T22:24:18&#43;08:00">March 13, 2025</time>
+            </li>
+            <li class="breadcrumb-item small">
+              1 minutes
+            </li>
+          </ol>
+        </div>
+      </header>
+      <article>
+        <h1 id="善用編譯器的檢查">善用編譯器的檢查</h1>
+<p>如果你的專案中，解構體常常會修改，那請不要用<code>..Default::default()</code>，雖然偷懶少寫了一點，但是修改時編譯器不會提示。</p>
+<pre tabindex="0"><code class="language-rust=" data-lang="rust=">#[derive(Default)]
+struct Foo {
+    a: i32,
+    b: i32,
+    c: i32,
+}
+
+fn main() {
+    let f = Foo {
+        a: 10,
+        ..Default::default()
+    };
+}
+</code></pre><p>上方範例中，如果在<code>Foo</code>中增加一個欄位<code>d</code>，而<code>Foo</code>使用的地方散落在各地且非常隱密，那麼使用的地方不會被編譯器報出錯誤，就需要多一些時間去尋找，這讓維護起來比較不方便。當然這取決於使用場景，可以取捨究竟要省一點點行數，還是比較需要編譯器的提示。</p>
+<p>希望這個技巧帶給讀者一些維護上的啟發。</p>
+
+      </article>
+      
+
+      <div class="row">
+    <div class="col-md">
+        
+        <a href="http://localhost:1313/posts/2023/08-leetcode65-with-state-machine/">
+            <span>previous: </span>
+            <span>手把手帶你使用狀態機！以 LeetCode 65. Valid Number 示範</span>
+        </a>
+        
+    </div>
+    <div class="col-md text-md-end">
+        
+    </div>
+</div>
+    </div>
+  </div>
+  <footer>
+    <div class="container mt-4 pb-1">
+    <p class="small">
+        
+        
+        // powered by <a href="https://gohugo.io/">hugo</a> and <a href="https://github.com/imgios/not-much">imgios/not-much</a>
+        
+    </p>
+</div>
+  </footer>
+
+  </main>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

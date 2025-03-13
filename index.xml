@@ -6,8 +6,15 @@
     <description>Recent content on WeiTheShinobi</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-tw</language>
-    <lastBuildDate>Thu, 28 Sep 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 13 Mar 2025 22:24:18 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>善用編譯器的檢查</title>
+      <link>http://localhost:1313/posts/2025/use_compiler_check/</link>
+      <pubDate>Thu, 13 Mar 2025 22:24:18 +0800</pubDate>
+      <guid>http://localhost:1313/posts/2025/use_compiler_check/</guid>
+      <description>善用編譯器的檢查 如果你的專案中，解構體常常會修改，那請不要用..Default::default()，雖然偷懶少寫了一點，但是修改時編譯器不會提示。&#xA;#[derive(Default)] struct Foo { a: i32, b: i32, c: i32, } fn main() { let f = Foo { a: 10, ..Default::default() }; } 上方範例中，如果在Foo中增加一個欄位d，而Foo使用的地方散落在各地且非常隱密，那麼使用的地方不會被編譯器報出錯誤，就需要多一些時間去尋找，這讓維護起來比較不方便。當然這取決於使用場景，可以取捨究竟要省一點點行數，還是比較需要編譯器的提示。&#xA;希望這個技巧帶給讀者一些維護上的啟發。</description>
+    </item>
     <item>
       <title>手把手帶你使用狀態機！以 LeetCode 65. Valid Number 示範</title>
       <link>http://localhost:1313/posts/2023/08-leetcode65-with-state-machine/</link>
